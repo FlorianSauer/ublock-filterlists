@@ -2,7 +2,7 @@
 ! Description: Hide heise+ paywall teasers, self-promo, affiliate best lists, and unwanted modules on heise.de
 ! Homepage: https://github.com/FlorianSauer/ublock-filterlists
 ! Expires: 2 days
-! Version: 20261115140000
+! Version: 20261115161000
 ! Last modified: 2026-11-15
 ! Licence: MIT
 !
@@ -63,3 +63,16 @@ heise.de##div[data-module-name="TeasersModule"][data-content-id="4624608"]
 heise.de##div[data-component="TeasersModule"]:has([data-component="ModuleHeader"]:has-text(Telepolis))
 ! c't NerdWord widget:
 heise.de##div[data-component="BackgroundContainer"]:has-text(NerdWord)
+
+! ---------- Article-page extras ----------
+! "Lesen Sie auch" recommendation box (measured on an article page,
+! the box carries its own data-component):
+heise.de##div[data-component="RecommendationBox"]
+! Newsletter signup box in the article sidebar. This variant carries
+! no data-* (which is why the NewsletterModule rule misses it);
+! anchored on the form action path two levels down:
+heise.de##aside:has(> div > form[action*="/newsletter/"])
+! Translation notice ("This article is also available in English"):
+! details notice with a semantic dismiss action; matches both
+! language directions (hide-en-pointer / hide-de-pointer):
+heise.de##details:has(button[data-action*="pointer"])
