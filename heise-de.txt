@@ -1,0 +1,65 @@
+! Title: ublock-filterlists – heise.de
+! Description: Hide heise+ paywall teasers, self-promo, affiliate best lists, and unwanted modules on heise.de
+! Homepage: https://github.com/FlorianSauer/ublock-filterlists
+! Expires: 2 days
+! Version: 20261115140000
+! Last modified: 2026-11-15
+! Licence: MIT
+!
+! Anchor policy: data-* attributes, href paths, ARIA roles, asset file
+! names. Text anchors only where the site offers no structural hook
+! (heise.de is German-only, its editorial labels are not localized).
+
+! ---------- heise+ / paywall teasers ----------
+! Badge asset file name, covers light and negative variants:
+heise.de##article:has(img[src*="heise_plus"])
+
+! ---------- Self-promo / marketing modules ----------
+! Every marketing module carries the "Eigenwerbung" label, the
+! attribute alone is enough and survives label renames:
+heise.de##div[data-component="MarketingTeaserModule"]
+! Event / webinar / workshop promos (promo chip inside the teaser):
+heise.de##a[data-component="TeaserLinkContainer"]:has(span:has-text(heise-Angebot))
+heise.de##div[data-component="NewsletterModule"]
+heise.de##div[data-component="PreisvergleichModule"]
+heise.de##div[data-module-name="HeiseJobsModule"]
+heise.de##div[data-component="TeasersModule"]:has(article[data-component="TeaserContainer"] a[href*="heise-academy.de"])
+
+! ---------- Series teasers ----------
+! Series name in the kicker component (a brand name, never localized):
+heise.de##article[data-component="TeaserContainer"]:has([data-component="TeaserKicker"]:has-text(TGIQF))
+heise.de##article[data-component="TeaserContainer"]:has([data-component="TeaserKicker"]:has-text(heiseshow))
+heise.de##article[data-component="TeaserContainer"]:has([data-component="TeaserKicker"]:has-text(3003))
+
+! ---------- External content ----------
+! Provider name as an attribute value (Podigee consent box):
+heise.de##[data-component="OptIn"][type="Podigee"]
+
+! ---------- Podcast bars ----------
+! Four self-promo podcast rows on the front page:
+heise.de##div[data-component="PodcastModule"]
+
+! ---------- heise+ / subscription promos ----------
+! Nav button "heise+ entdecken" and Abo link (affiliate):
+heise.de##a[href*="/plus/abo"]
+heise.de##a[href="/plus"]
+! Sticky action bar at the bottom ("1 Jahr mit 50 % Rabatt"):
+heise.de##a-sticky-footer[data-component="StickyFooter"]
+! "Beliebt bei Abonnenten" column (collapse box, plus-only content):
+heise.de##a-collapse[data-component="Box"]:has(header:has-text(Beliebt bei Abonnenten))
+
+! ---------- Best lists (affiliate articles) ----------
+heise.de##article:has(a[href*="/bestenlisten/"])
+heise.de##div[data-component="TeasersModule"]:has(a[href*="/bestenlisten/"])
+! Optional: the tab in the topic strip
+!heise.de##li:has(a[href*="/bestenlisten/"])
+
+! ---------- Other unwanted modules ----------
+! Video module ("Aktuelle Videos"):
+heise.de##div[data-component="TeasersModule"]:has([data-component="ModuleHeader"]:has-text(Aktuelle Videos))
+! English news module (identified by data-content-id, no text anchor):
+heise.de##div[data-module-name="TeasersModule"][data-content-id="4624608"]
+! Telepolis:
+heise.de##div[data-component="TeasersModule"]:has([data-component="ModuleHeader"]:has-text(Telepolis))
+! c't NerdWord widget:
+heise.de##div[data-component="BackgroundContainer"]:has-text(NerdWord)
