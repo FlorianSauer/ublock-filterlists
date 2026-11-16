@@ -1,0 +1,41 @@
+name: Build combined filter list
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build ublock-filterlists.txt
+        run: |
+          {
+            echo "! Title: ublock-filterlists – all hosts"
+            echo "! Description: Custom filter lists for uBlock Origin (all hosts in one list)"
+            echo "! Homepage: https://github.com/FlorianSauer/ublock-filterlists"
+            echo "! Expires: 2 days"
+            echo "! Version: $(date -u +%Y%m%d%H%M%S)"
+            echo "! Last modified: $(date -u +%F)"
+            echo "! Licence: MIT"
+            echo "!"
+            cat heise-de.txt
+            echo ""
+            cat tumblr-com.txt
+          } > ublock-filterlists.txt
+          wc -l ublock-filterlists.txt
+
+      - name: Publish as release asset (plain text, no archive)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create latest ublock-filterlists.txt \
+            --title "ublock-filterlists – all hosts" \
+            --notes "ublock-filterlists.txt contains every host list in one plain-text file." \
+            || gh release upload latest ublock-filterlists.txt --clobber

@@ -1,61 +1,36 @@
 # ublock-filterlists
 
-Custom filter lists for uBlock Origin. Rules are built around stable
-anchors (`data-*` attributes, `href` paths, ARIA roles, asset file
-names) — no generated class names, no prose text anchors on multi-lingual
-sites.
+Custom filter lists for uBlock Origin.
 
-## Layout
+## Subscribe
 
-One list per host, named `<host>.txt`, at the repository root. The set
-of hosts grows over time; adding a host means adding one file.
+Every host list in one file:
 
-Current lists:
+```
+https://github.com/FlorianSauer/ublock-filterlists/releases/latest/download/ublock-filterlists.txt
+```
 
-| File | Covers |
-|---|---|
-| `heise-de.txt` | heise+ paywall teasers, self-promo, affiliate best lists, podcast/video/widget modules, sticky action bar |
-| `tumblr-com.txt` | cookie banner (CMP), login nags/dialogs, scroll lock |
-
-## Subscribing (uBlock Origin)
-
-1. uBO dashboard → Filter lists → "Import…" at the bottom
-2. Paste the raw URL of a list:
+One file per host:
 
 ```
 https://raw.githubusercontent.com/FlorianSauer/ublock-filterlists/main/heise-de.txt
 https://raw.githubusercontent.com/FlorianSauer/ublock-filterlists/main/tumblr-com.txt
 ```
 
+uBO dashboard -> Filter lists -> "Import…" -> paste a URL.
+
 ## Updating
 
-```
-git add -A
-git commit -m "<host>: <what changed and why>"
-git push
-```
+uBO re-fetches every 2 days (`! Expires: 2 days`). 
+"Update now" in the dashboard fetches immediately. 
+A push to `main` rebuilds the combined file automatically. There is no build step to run.
 
-The push is the release. uBO re-fetches on its own schedule
-(`! Expires: 2 days` in each header); force an immediate check via
-dashboard → Filter lists → "Update now".
+## Files
 
-## Adding a new host
+| File | Covers |
+|---|---|
+| `heise-de.txt` | heise+ paywall teasers, self-promo, affiliate best lists, podcast/video/widget modules, sticky action bar |
+| `tumblr-com.txt` | cookie banner (CMP), login nags/dialogs, scroll lock |
 
-1. Facts first: measure the live page, dump the markup, find the
-   structural hooks before writing a single rule.
-2. Create `<host>.txt` with the standard header (`Title`,
-   `Description`, `Homepage`, `Expires`, `Version`, `Last modified`,
-   `Licence`).
-3. Anchor preference order: `data-*` attribute → `href` path / asset
-   file name → ARIA → DOM structure → text anchor (monolingual sites
-   only).
-4. Every rule carries a comment: what it hides, which anchor it uses,
-   why. Record the measured hit count where useful.
-5. Commit per host.
-
-## Conventions
-
-- No hashed/generated class names, no prose `:has-text()` anchors on
-  multi-lingual sites.
-- Every rule is measured against the live page before inclusion;
-  unmeasured rules do not ship.
+`ublock-filterlists.txt` (all of the above, concatenated) is built by the release workflow. 
+It is not stored in this repository.
