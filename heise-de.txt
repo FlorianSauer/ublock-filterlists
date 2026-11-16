@@ -2,8 +2,8 @@
 ! Description: Hide heise+ paywall teasers, self-promo, affiliate best lists, and unwanted modules on heise.de
 ! Homepage: https://github.com/FlorianSauer/ublock-filterlists
 ! Expires: 2 days
-! Version: 20261115161000
-! Last modified: 2026-11-15
+! Version: 20261116160000
+! Last modified: 2026-11-16
 ! Licence: MIT
 !
 ! Anchor policy: data-* attributes, href paths, ARIA roles, asset file
@@ -32,8 +32,15 @@ heise.de##article[data-component="TeaserContainer"]:has([data-component="TeaserK
 heise.de##article[data-component="TeaserContainer"]:has([data-component="TeaserKicker"]:has-text(3003))
 
 ! ---------- External content ----------
-! Provider name as an attribute value (Podigee consent box):
-heise.de##[data-component="OptIn"][type="Podigee"]
+! Consent boxes ("Empfohlener redaktioneller Inhalt / Mit Ihrer
+! Zustimmung…"): the opt-in widget carries an accept button. Provider
+! agnostic (measured: Podigee, "Preisvergleichinternetservices") and
+! robust against the data-component attribute, which varies per
+! template (news pages omit it). Video tiles stay: they are
+! figure/img without any button:
+heise.de##a-opt-in:has(button)
+! Podigee leftovers without a consent form (stealth player footer):
+heise.de##a-opt-in[type*="Podigee"]
 
 ! ---------- Podcast bars ----------
 ! Four self-promo podcast rows on the front page:
@@ -43,10 +50,18 @@ heise.de##div[data-component="PodcastModule"]
 ! Nav button "heise+ entdecken" and Abo link (affiliate):
 heise.de##a[href*="/plus/abo"]
 heise.de##a[href="/plus"]
-! Sticky action bar at the bottom ("1 Jahr mit 50 % Rabatt"):
-heise.de##a-sticky-footer[data-component="StickyFooter"]
-! "Beliebt bei Abonnenten" column (collapse box, plus-only content):
-heise.de##a-collapse[data-component="Box"]:has(header:has-text(Beliebt bei Abonnenten))
+! Sticky action bar at the bottom ("1 Jahr mit 50 % Rabatt"), floats at the
+! bottom edge (a-sticky-footer, 1104x106, z-index 5999996; 2026-11-15, 1).
+! Anchored on the tag alone so variants without data-component still match:
+heise.de##a-sticky-footer
+! "beliebt bei Abonnenten" (plus-only content; now empty because the
+! plus teasers are hidden): the box itself, and on the front page the
+! whole column in the 3-column group (flex: 1 keeps its 336px even when
+! the box is empty; measured 1 of 3 columns, 2026-11-16). Source text is
+! lowercase "beliebt" — the anchor is a case-insensitive regex, the
+! plain string form misses (measured 0 vs. 1):
+heise.de##a-collapse[data-component="Box"]:has(header:has-text(/beliebt\s+bei\s+abonnenten/i))
+heise.de##a-collapse-group > div:has(header:has-text(/beliebt\s+bei\s+abonnenten/i))
 
 ! ---------- Best lists (affiliate articles) ----------
 heise.de##article:has(a[href*="/bestenlisten/"])
@@ -61,8 +76,13 @@ heise.de##div[data-component="TeasersModule"]:has([data-component="ModuleHeader"
 heise.de##div[data-module-name="TeasersModule"][data-content-id="4624608"]
 ! Telepolis:
 heise.de##div[data-component="TeasersModule"]:has([data-component="ModuleHeader"]:has-text(Telepolis))
-! c't NerdWord widget:
+! c't NerdWord podcast bar (BackgroundContainer):
 heise.de##div[data-component="BackgroundContainer"]:has-text(NerdWord)
+! c't NerdWord puzzle module ("Welches nerdige Lösungswort suchen wir
+! heute? Sie haben sechs Versuche.", HeroModule with h2 heading). The
+! podcast rule above misses it (measured: 0 puzzle texts inside
+! BackgroundContainer); 2026-11-16, 1:
+heise.de##div[data-module-name="HeroModule"]:has(h2:has-text(/nerdword/i))
 
 ! ---------- Article-page extras ----------
 ! "Lesen Sie auch" recommendation box (measured on an article page,
@@ -72,7 +92,35 @@ heise.de##div[data-component="RecommendationBox"]
 ! no data-* (which is why the NewsletterModule rule misses it);
 ! anchored on the form action path two levels down:
 heise.de##aside:has(> div > form[action*="/newsletter/"])
+! Newsletter promo banner ("markenbanner" placements, image link to
+! /newsletter/anmeldung.html?id=…). Hides the wrapper block, not just
+! the link (footer links to the newsletter page stay untouched);
+! measured structure: div > figure > a:
+heise.de##div:has(> figure > a[href*="/newsletter/anmeldung"])
+! Branding banner family: image link wrapped in figure.branding, e.g.
+! the pro.heise.de/security/ campaign box at the article end
+! (2026-11-16, 1). Anchored on the wrapper class because the campaign
+! URL (LPID=…) changes per campaign while the structure stays:
+heise.de##div:has(> figure.branding)
 ! Translation notice ("This article is also available in English"):
 ! details notice with a semantic dismiss action; matches both
 ! language directions (hide-en-pointer / hide-de-pointer):
 heise.de##details:has(button[data-action*="pointer"])
+
+! ---------- Advertising ----------
+! Classic ad modules (measured on a topic page: 4 NewAdModule +
+! 5 AdModule instances, grey placeholders inside):
+heise.de##[data-component="NewAdModule"]
+heise.de##[data-module-name="AdModule"]
+! Ad tiles scattered through teaser grids ("graue Dosen"): the empty
+! placeholder surface. Anchored on the placeholder class pair (light +
+! dark mode variant of the same design token — not a hash, it changes
+! only with the design system); the wrapper collapses to 0 height:
+heise.de##div[class*="bg-heiseblau-100"][class*="bg-gray-900"]
+! Empty grey ad band at page end (ad-desktop-group-2 shell, 1104x294;
+!   2026-11-15, 1) and the bare slot shells (ad-desktop/ad-mobile-group,
+!   2026-11-15, 3):
+heise.de##div[class*="a-layout--bg-grey"]:has([class*="ad-desktop-group"], [class*="ad-mobile-group"])
+heise.de##div[class*="ad-desktop-group"], div[class*="ad-mobile-group"]
+! Sidebar "Anzeige" placeholder box (grey img-ad shell, 336x283; 2026-11-15, 1)
+heise.de##aside[class*="img-ad"]
