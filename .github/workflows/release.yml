@@ -39,3 +39,11 @@ jobs:
             --title "ublock-filterlists – all hosts" \
             --notes "ublock-filterlists.txt contains every host list in one plain-text file." \
             || gh release upload latest ublock-filterlists.txt --clobber
+
+      - name: Commit combined list into the repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ublock-filterlists.txt
+          git diff --cached --quiet || git commit -m "build ublock-filterlists.txt [skip ci]"
+          git push

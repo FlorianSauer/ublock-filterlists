@@ -4,10 +4,10 @@ Custom filter lists for uBlock Origin.
 
 ## Subscribe
 
-Every host list in one file:
+Both host lists in one file; this is the URL to paste into uBO:
 
 ```
-https://github.com/FlorianSauer/ublock-filterlists/releases/latest/download/ublock-filterlists.txt
+https://raw.githubusercontent.com/FlorianSauer/ublock-filterlists/main/ublock-filterlists.txt
 ```
 
 One file per host:
@@ -32,5 +32,8 @@ A push to `main` rebuilds the combined file automatically. There is no build ste
 | `heise-de.txt` | heise+ paywall teasers, self-promo, affiliate best lists, podcast/video/widget modules, sticky action bar |
 | `tumblr-com.txt` | cookie banner (CMP), login nags/dialogs, scroll lock |
 
-`ublock-filterlists.txt` (all of the above, concatenated) is built by the release workflow. 
-It is not stored in this repository.
+`ublock-filterlists.txt` (all of the above, concatenated) is rebuilt by CI on each push and committed into this repository. The same file is attached to the latest release as a plain-text download:
+
+```
+https://github.com/FlorianSauer/ublock-filterlists/releases/latest/download/ublock-filterlists.txt
+```
