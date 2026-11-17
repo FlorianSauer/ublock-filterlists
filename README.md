@@ -7,14 +7,14 @@ Custom filter lists for uBlock Origin.
 Both host lists in one file; this is the URL to paste into uBO:
 
 ```
-https://raw.githubusercontent.com/FlorianSauer/ublock-filterlists/main/ublock-filterlists.txt
+https://floriansauer.github.io/ublock-filterlists/ublock-filterlists.txt
 ```
 
 One file per host:
 
 ```
-https://raw.githubusercontent.com/FlorianSauer/ublock-filterlists/main/heise-de.txt
-https://raw.githubusercontent.com/FlorianSauer/ublock-filterlists/main/tumblr-com.txt
+https://raw.githubusercontent.com/FlorianSauer/ublock-filterlists/main/domain-lists/heise-de.txt
+https://raw.githubusercontent.com/FlorianSauer/ublock-filterlists/main/domain-lists/tumblr-com.txt
 ```
 
 uBO dashboard -> Filter lists -> "Import…" -> paste a URL.
@@ -23,16 +23,16 @@ uBO dashboard -> Filter lists -> "Import…" -> paste a URL.
 
 uBO re-fetches every 2 days (`! Expires: 2 days`). 
 "Update now" in the dashboard fetches immediately. 
-A push to `main` rebuilds the combined file automatically. There is no build step to run.
+A push to `main` goes live at the next fetch.
 
 ## Files
 
 | File | Covers |
 |---|---|
-| `heise-de.txt` | heise+ paywall teasers, self-promo, affiliate best lists, podcast/video/widget modules, sticky action bar |
-| `tumblr-com.txt` | cookie banner (CMP), login nags/dialogs, scroll lock |
+| `domain-lists/heise-de.txt` | heise+ paywall teasers, self-promo, affiliate best lists, podcast/video/widget modules, sticky action bar |
+| `domain-lists/tumblr-com.txt` | cookie banner (CMP), login nags/dialogs, scroll lock |
 
-`ublock-filterlists.txt` (all of the above, concatenated) is rebuilt by CI on each push and committed into this repository. The same file is attached to the latest release as a plain-text download:
+`ublock-filterlists.txt` (all of the above in one) is built automatically and served at the subscription URL above. The same file is attached to the latest release as a plain-text download:
 
 ```
 https://github.com/FlorianSauer/ublock-filterlists/releases/latest/download/ublock-filterlists.txt
