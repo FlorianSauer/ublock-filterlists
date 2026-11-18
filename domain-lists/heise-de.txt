@@ -2,8 +2,8 @@
 ! Description: Hide heise+ paywall teasers, self-promo, affiliate best lists, and unwanted modules on heise.de
 ! Homepage: https://github.com/FlorianSauer/ublock-filterlists
 ! Expires: 2 days
-! Version: 20261116160000
-! Last modified: 2026-11-16
+! Version: 20261118152122
+! Last modified: 2026-11-18
 ! Licence: MIT
 !
 ! Anchor policy: data-* attributes, href paths, ARIA roles, asset file
@@ -11,8 +11,13 @@
 ! (heise.de is German-only, its editorial labels are not localized).
 
 ! ---------- heise+ / paywall teasers ----------
-! Badge asset file name, covers light and negative variants:
-heise.de##article:has(img[src*="heise_plus"])
+! Badge asset file name, covers light and negative variants. The page
+! article (class article-layout) itself embeds an inline plus teaser,
+! so the plain article:has() also matched the whole page body (news
+! page 2026-11-18: 1056x3987 incl. h1 and article-content, page
+! rendered empty); :not(.article-layout) leaves the page article alone
+! and still hides the teaser card (same day, 1 match, 594x90):
+heise.de##article:has(img[src*="heise_plus"]):not(.article-layout)
 
 ! ---------- Self-promo / marketing modules ----------
 ! Every marketing module carries the "Eigenwerbung" label, the
