@@ -1,0 +1,42 @@
+! Title: ublock-filterlists – discord.com
+! Description: Hide the terms consent popup in the Discord web client (other dialogs stay)
+! Homepage: https://github.com/FlorianSauer/ublock-filterlists
+! Expires: 2 days
+! Version: 20261121004051
+! Last modified: 2026-11-21
+! Licence: MIT
+!
+! Anchor policy: data-* attributes, href paths, ARIA roles, asset file
+! names. Text anchors only where the site offers no structural hook.
+! Discord is multilingual, so this list uses no text anchors at all.
+
+! ---------- Terms consent popup ----------
+! The modal stack mounts one layerContainer per layer (measured
+! 2026-11-21 on the saved DOM of the logged-in web client: 3 containers,
+! picture-in-picture / consent dialog / empty), so the container must
+! not be the target or every other dialog (settings, image viewer,
+! soundboard) would go with it. Targets are the scrim and the layer
+! around the consent dialog only. The dialog carries role="dialog",
+! aria-modal="true" and data-dialog="modal"; its distinguishing mark
+! is the campaign article link (important-policy-updates), which no
+! settings or media dialog contains. Measured on the saved DOM:
+! 1 hit per rule, 0 hits on the two foreign layers.
+! The scrim is the single dim of the whole modal stack (live test
+! 2026-11-21: hiding it unconditionally also removed the dimming
+! behind the image viewer, whose layer mounts after the consent
+! layer and reuses the same scrim). Rule 1 therefore requires the
+! consent layer to be the last layer of the stack; with any other
+! dialog on top the scrim is released and dims again. Strictly
+! narrower than the first version: it can hide nothing the first
+! version did not hide:
+discord.com##div[class*="scrim_"]:has(+ div[class*="layer_"]:last-child > div[data-dialog="modal"] a[href*="important-policy-updates"])
+discord.com##div[class*="layer_"]:has(> div[data-dialog="modal"] a[href*="important-policy-updates"])
+! The released scrim still intercepted hover (live test 2026-11-21:
+! hovering a user flickered 1-2 times per second between the dimmed
+! popout and the plain page: the scrim stole the hover from the
+! trigger, the popout closed, the scrim went away, the hover came
+! back). CSS cannot oscillate on its own; the loop was the scrim
+! visibility following the layer stack. Rule 3 keeps that scrim
+! pointer-transparent, so it dims but never intercepts hover or
+! clicks:
+discord.com##div[class*="scrim_"]:has(+ div[class*="layer_"] > div[data-dialog="modal"] a[href*="important-policy-updates"]):style(pointer-events: none !important)
